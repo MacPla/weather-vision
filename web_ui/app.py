@@ -34,4 +34,8 @@ def index():
 
     return render_template("index.html", status=status, timestamp=timestamp, history=history)
 
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('/shared', filename)
+    
 app.run(host="0.0.0.0", port=8080)
