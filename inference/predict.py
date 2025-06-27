@@ -1,10 +1,10 @@
-
 import os
 import time
 import cv2
 import torch
 from torchvision import transforms
 from PIL import Image
+from datetime import datetime
 
 labels = ["cloudy", "foggy", "rainy", "snowy", "sunny"]
 
@@ -38,10 +38,26 @@ while True:
         pred = output.argmax(1).item()
 
     label = labels[pred % len(labels)]
+    now = datetime.now()
+    timestamp = now.strftime("%H:%M:%S - %d/%m/%Y")
 
-    print(f"Detected weather: {label}")
+    print(f"[{timestamp}] Detected weather: {label}")
 
+    os.makedirs("/shared/history", exist_ok=True)
+
+    # Save current status and image
     with open("/shared/latest.txt", "w") as f:
         f.write(label)
+    with open("/shared/timestamp.txt", "w") as f:
+        f.write(timestamp)
+
+    # Save hourly snapshot
+    hour_stamp = now.strftime("%Y-%m-%d_%H")
+    cv2.imwrite(f"/shared/history/{hour_stamp}.jpg", frame)
+    with open(f"/shared/history/{hour_stamp}.txt", "w") as f:
+        f.write(label)
+
+    # Save current image too
+    cv2.imwrite("/shared/last.jpg", frame)
 
     time.sleep(10)

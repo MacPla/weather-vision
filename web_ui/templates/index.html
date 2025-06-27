@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Vision Dashboard</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        img {
+            max-width: 80%%;
+            border: 2px solid #555;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #444;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .history {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .entry {
+            background-color: #2e2e2e;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+        }
+        .entry img {
+            max-width: 100%%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Vision Dashboard</h1>
+    <p><strong>Current:</strong> {{ status }}</p>
+    <p><strong>Last analyzed:</strong> {{ timestamp }}</p>
+    <img src="/static/last.jpg" alt="Latest Frame">
+    <br>
+    <button onclick="window.location.reload();">🔄 Refresh</button>
+
+    <h2>History (Last 12 Hours)</h2>
+    <div class="history">
+        {% for entry in history %}
+        <div class="entry">
+            <p>{{ entry.time }}</p>
+            <p>{{ entry.status }}</p>
+            <img src="{{ entry.image_url }}" alt="history frame">
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
