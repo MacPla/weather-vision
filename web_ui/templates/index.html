@@ -1,128 +1,75 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Weather Vision Dashboard</title>
     <style>
         body {
             background-color: #1e1e1e;
-            color: #ffffff;
+            color: white;
             font-family: Arial, sans-serif;
             text-align: center;
+        }
+        .container {
             padding: 20px;
         }
-
-        .main-image {
-            width: 320px;
-            height: 240px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid #666;
-        }
-
-        .thumbnail {
-            width: 160px;
-            height: 120px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid #444;
-        }
-
-        .history {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .entry {
+        .status-box, .history-item {
             background-color: #2e2e2e;
-            padding: 10px;
-            border-radius: 6px;
-            width: 180px;
+            margin: 10px auto;
+            padding: 15px;
+            border-radius: 10px;
+            width: 320px;
         }
-
-        button {
+        .status-box img, .history-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .refresh-button {
+            margin-top: 10px;
+            padding: 10px 20px;
             background-color: #444;
             color: white;
-            padding: 8px 16px;
             border: none;
-            cursor: pointer;
-            margin: 20px 0;
+            border-radius: 5px;
         }
-
-        /* Lightbox styles */
-        #lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 9999;
-        }
-
-        #lightbox img {
-            max-width: 90vw;
-            max-height: 80vh;
-            margin-bottom: 10px;
-        }
-
-        #lightbox p {
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        #lightbox button {
-            background-color: #222;
-            border: 1px solid #666;
+        .refresh-button:hover {
+            background-color: #666;
         }
     </style>
 </head>
 <body>
-    <h1>Weather Vision Dashboard</h1>
-    <p><strong>Current:</strong> {{ status }}</p>
-    <p><strong>Last analyzed:</strong> {{ timestamp }}</p>
+    <div class="container">
+        <h1>Weather Vision Dashboard</h1>
+        <div class="status-box">
+            <p><strong>Current:</strong> {{ status }}</p>
+            <p><strong>Last analyzed:</strong> {{ timestamp }}</p>
+            <a href="{{ img_url }}"><img src="{{ img_url }}" alt="Last Frame"></a><br>
+            <form method="get">
+                <button class="refresh-button" type="submit">🔄 Refresh</button>
+            </form>
+        </div>
 
-    <img src="/static/last.jpg" class="main-image" onclick="openLightbox('/static/last.jpg', '{{ timestamp }}', '{{ status }}')">
-    <br>
-    <button onclick="window.location.reload();">🔄 Refresh</button>
-
+        
     <h2>History (Last 12 Hours)</h2>
-    <div class="history">
+    <div style="display: flex; overflow-x: auto; gap: 10px; padding: 10px 0;">
+    {% for entry in history %}
+      <div style="flex: 0 0 auto; text-align: center;">
+        <a href="/image/{{ entry.timestamp }}">
+          <img src="{{ entry.image }}" alt="{{ entry.timestamp }}" style="height: 100px; border-radius: 8px;">
+        </a>
+        <div>{{ entry.timestamp.split(' ')[1][:5] }}</div>
+        <div>{{ entry.label }}</div>
+      </div>
+    {% endfor %}
+    </div>
+    
         {% for entry in history %}
-        <div class="entry">
+        <div class="history-item">
             <p>{{ entry.time }}</p>
             <p>{{ entry.status }}</p>
-            <img src="{{ entry.image_url }}" class="thumbnail" onclick="openLightbox('{{ entry.image_url }}', '{{ entry.time }}', '{{ entry.status }}')">
+            <a href="{{ entry.image_url }}"><img src="{{ entry.image_url }}" alt="history frame"></a>
         </div>
         {% endfor %}
     </div>
-
-    <div id="lightbox" onclick="closeLightbox()">
-        <img id="lightbox-img" src="">
-        <p id="lightbox-info"></p>
-        <button onclick="closeLightbox()">🔙 Volver</button>
-    </div>
-
-    <script>
-        function openLightbox(src, time, status) {
-            event.stopPropagation();
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox-info').innerText = `Time: ${time} | Status: ${status}`;
-            document.getElementById('lightbox').style.display = 'flex';
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').style.display = 'none';
-        }
-
-        document.getElementById('lightbox-img')?.addEventListener('click', e => e.stopPropagation());
-    </script>
 </body>
 </html>
