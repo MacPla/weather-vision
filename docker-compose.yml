@@ -1,0 +1,30 @@
+
+version: '3.8'
+
+services:
+  inference:
+    build: ./inference
+    restart: always
+    environment:
+      - RTSP_URL=${RTSP_URL}
+    volumes:
+      - shared_data:/shared
+    networks:
+      - weather_net
+
+  web_ui:
+    build: ./web_ui
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - shared_data:/shared
+    networks:
+      - weather_net
+
+volumes:
+  shared_data:
+
+networks:
+  weather_net:
+    driver: bridge
