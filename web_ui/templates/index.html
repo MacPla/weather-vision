@@ -57,7 +57,11 @@
         <a href="/image/{{ entry.timestamp }}">
           <img src="{{ entry.image }}" alt="{{ entry.timestamp }}" style="height: 100px; border-radius: 8px;">
         </a>
-        <div>{{ entry.timestamp.split(' ')[1][:5] }}</div>
+        {% if entry.timestamp %}
+          <div>{{ entry.timestamp.split(' ')[1][:5] }}</div>
+        {% else %}
+          <div>no timestamp</div>
+        {% endif %}
         <div>{{ entry.label }}</div>
       </div>
     {% endfor %}
