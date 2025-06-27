@@ -41,13 +41,3 @@ def shared_files(filename):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
-@app.route("/image/<timestamp>")
-def show_image(timestamp):
-    import os
-    from flask import render_template
-    image_folder = "static/images"
-    image_path = os.path.join(image_folder, f"{timestamp}.jpg")
-    if not os.path.exists(image_path):
-        return "Image not found", 404
-    return render_template("image_view.html", image=f"/{image_path}", timestamp=timestamp)
