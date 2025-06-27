@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,34 +12,75 @@
             text-align: center;
             padding: 20px;
         }
-        img {
-            max-width: 80%%;
-            border: 2px solid #555;
-            margin: 10px 0;
-        }
-        button {
-            background-color: #444;
-            color: white;
-            padding: 10px 20px;
-            border: none;
+
+        .main-image {
+            width: 320px;
+            height: 240px;
+            object-fit: cover;
             cursor: pointer;
-            margin-bottom: 20px;
+            border: 2px solid #666;
         }
+
+        .thumbnail {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #444;
+        }
+
         .history {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
         }
+
         .entry {
             background-color: #2e2e2e;
             padding: 10px;
-            border-radius: 8px;
-            width: 150px;
+            border-radius: 6px;
+            width: 180px;
         }
-        .entry img {
-            max-width: 100%%;
-            height: auto;
+
+        button {
+            background-color: #444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        /* Lightbox styles */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+
+        #lightbox img {
+            max-width: 90vw;
+            max-height: 80vh;
+            margin-bottom: 10px;
+        }
+
+        #lightbox p {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        #lightbox button {
+            background-color: #222;
+            border: 1px solid #666;
         }
     </style>
 </head>
@@ -46,7 +88,8 @@
     <h1>Weather Vision Dashboard</h1>
     <p><strong>Current:</strong> {{ status }}</p>
     <p><strong>Last analyzed:</strong> {{ timestamp }}</p>
-    <img src="/static/last.jpg" alt="Latest Frame">
+
+    <img src="/static/last.jpg" class="main-image" onclick="openLightbox('/static/last.jpg', '{{ timestamp }}', '{{ status }}')">
     <br>
     <button onclick="window.location.reload();">🔄 Refresh</button>
 
@@ -56,9 +99,30 @@
         <div class="entry">
             <p>{{ entry.time }}</p>
             <p>{{ entry.status }}</p>
-            <img src="{{ entry.image_url }}" alt="history frame">
+            <img src="{{ entry.image_url }}" class="thumbnail" onclick="openLightbox('{{ entry.image_url }}', '{{ entry.time }}', '{{ entry.status }}')">
         </div>
         {% endfor %}
     </div>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="">
+        <p id="lightbox-info"></p>
+        <button onclick="closeLightbox()">🔙 Volver</button>
+    </div>
+
+    <script>
+        function openLightbox(src, time, status) {
+            event.stopPropagation();
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-info').innerText = `Time: ${time} | Status: ${status}`;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        document.getElementById('lightbox-img')?.addEventListener('click', e => e.stopPropagation());
+    </script>
 </body>
 </html>
