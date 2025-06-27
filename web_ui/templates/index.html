@@ -49,25 +49,14 @@
             </form>
         </div>
 
-        
-<h2>History (Last 12 Hours)</h2>
-<div style="display: flex; overflow-x: auto; gap: 16px; padding: 10px 0;">
-{% for entry in history if entry.timestamp and entry.image and entry.label %}
-  <div style="flex: 0 0 auto; text-align: center; background-color: #222; padding: 8px; border-radius: 10px; min-width: 120px;">
-    <a href="/image/{{ entry.timestamp }}">
-      <img src="{{ entry.image }}" alt="{{ entry.timestamp }}" style="height: 80px; border-radius: 6px;">
-    </a>
-    <div style="margin-top: 5px; font-size: 0.9em;">🕒 {{ entry.timestamp.split(' ')[1][:5] }}</div>
-    <div style="font-size: 0.9em;">🌤️ {{ entry.label }}</div>
-    {% if entry.confidence %}
-      <div style="font-size: 0.8em; color: #aaa;">Confidence: {{ entry.confidence }}%</div>
-    {% endif %}
-    {% if entry.top_classes %}
-      <div style="font-size: 0.8em; color: #aaa;">Top 3: {{ entry.top_classes | join(', ') }}</div>
-    {% endif %}
-  </div>
-{% endfor %}
-</div>
-
+        <h2>History (Last 12 Hours)</h2>
+        {% for entry in history %}
+        <div class="history-item">
+            <p>{{ entry.time }}</p>
+            <p>{{ entry.status }}</p>
+            <a href="{{ entry.image_url }}"><img src="{{ entry.image_url }}" alt="history frame"></a>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
